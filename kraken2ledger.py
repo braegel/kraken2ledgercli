@@ -57,16 +57,8 @@ for index, row in df.iterrows():
                 print("\t; ",index,": ",value)
             for index, value in subframe.iloc[1].items() :
                 print("\t; ",index,": ",value)
-            if subframe.iloc[0]['fee'] == 0:
-                fledger(options.krakenaccount,subframe.iloc[0]['amount'],subframe.iloc[0]['asset'],subframe.iloc[0]['balance'],)
-#                print("\t",options.krakenaccount,"\t\t",subframe.iloc[0]['asset'],np.format_float_positional(subframe.iloc[0]['amount'],trim='-'))
-            else:
-#                fledger(options.krakenaccount,subframe.iloc[0]['asset'],np.format_float_positional(subframe.iloc[0]['balance']
-                print("\t",options.krakenaccount,"\t=",subframe.iloc[0]['asset'],np.format_float_positional(subframe.iloc[0]['balance'],trim='-'))
-            if subframe.iloc[1]['fee'] == 0:
-                print("\t",options.krakenaccount,"\t\t",subframe.iloc[1]['asset'],np.format_float_positional(subframe.iloc[1]['amount'],trim='-'))
-            else:
-                print("\t",options.krakenaccount,"\t=",subframe.iloc[1]['asset'],np.format_float_positional(subframe.iloc[1]['balance'],trim='-'))
+            fledger(options.krakenaccount,subframe.iloc[0]['amount']-subframe.iloc[0]['fee'],subframe.iloc[0]['asset'],subframe.iloc[0]['balance'],)
+            fledger(options.krakenaccount,subframe.iloc[1]['amount']-subframe.iloc[1]['fee'],subframe.iloc[1]['asset'],subframe.iloc[1]['balance'],)
             print("\t",options.feeaccount,"\t\t",subframe.iloc[0]['asset']," ",np.format_float_positional(subframe.iloc[0]['fee'],trim='-'))
             print("\t",options.feeaccount,"\t\t",subframe.iloc[1]['asset']," ",np.format_float_positional(subframe.iloc[1]['fee'],trim='-'))
 

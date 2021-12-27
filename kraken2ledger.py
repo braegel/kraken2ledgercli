@@ -5,10 +5,15 @@ from dateutil.parser import parse
 from optparse import OptionParser
 
 def fledger(account,amount,asset,balance=float("NaN")):
+    amount = round(amount,10)
     if asset == "ZEUR":
         asset = "EUR";
+        amount = round(amount,2)
+        balance = round(balance,2)
     if asset == "ZUSD":
         asset = "USD";
+        amount  = round(amount,2)
+        balance = round(balance,2)
     ll="  "+account+"  "+asset+" "
     if options.decimalcomma:
         ll=ll+np.format_float_positional(amount,trim='-').replace(".",",")
@@ -57,24 +62,24 @@ for index, row in df.iterrows():
                 print("\t; ",index,": ",value)
             for index, value in subframe.iloc[1].items() :
                 print("\t; ",index,": ",value)
-            fledger(options.krakenaccount,subframe.iloc[0]['amount']-subframe.iloc[0]['fee'],subframe.iloc[0]['asset'],subframe.iloc[0]['balance'],)
-            fledger(options.krakenaccount,subframe.iloc[1]['amount']-subframe.iloc[1]['fee'],subframe.iloc[1]['asset'],subframe.iloc[1]['balance'],)
-            print("\t",options.feeaccount,"\t\t",subframe.iloc[0]['asset']," ",np.format_float_positional(subframe.iloc[0]['fee'],trim='-'))
-            print("\t",options.feeaccount,"\t\t",subframe.iloc[1]['asset']," ",np.format_float_positional(subframe.iloc[1]['fee'],trim='-'))
+            fledger(options.krakenaccount,subframe.iloc[0]['amount']-subframe.iloc[0]['fee'],subframe.iloc[0]['asset'],subframe.iloc[0]['balance'])
+            fledger(options.krakenaccount,subframe.iloc[1]['amount']-subframe.iloc[1]['fee'],subframe.iloc[1]['asset'],subframe.iloc[1]['balance'])
+            fledger(options.feeaccount,subframe.iloc[0]['fee'],subframe.iloc[0]['asset'])
+            fledger(options.feeaccount,subframe.iloc[1]['fee'],subframe.iloc[1]['asset'])
 
     elif isinstance(row['txid'],str):
 #        print(type(row['txid']))
         print(date.strftime('%Y/%m/%d'),"* ",row['type'])
         for index, value in row.items():
             print("\t; ",index,": ",value)
-        print("\t",options.krakenaccount,"\t=",row['asset'],np.format_float_positional(row['balance'],trim='-'))
-        print("\t",options.feeaccount,"\t\t",row['asset']," ",np.format_float_positional(row['fee'],trim='-'))
-
+        fledger(options.krakenaccount,row['amount']-row['fee'],row['asset'],row['balance'])
+        fledger(options.feeaccount,row['fee'],row['asset'])
         if row['type']=='deposit':
-            print("\t",options.externalaccount,"\t\t",row['asset'],np.format_float_positional(-row['amount'],trim='-'))
+            fledger(options.externalaccount,-row['amount'],row['asset'])
         if row['type']=='transfer':
-            print("\t",options.transferaccount,"\t\t",row['asset'],np.format_float_positional(-row['amount'],trim='-'))
+            fledger(options.transferaccount,-row['amount'],row['asset'])
         if row['type']=='withdrawal':
-            print("\t",options.externalaccount,"\t\t",row['asset'],np.format_float_positional(-row['amount'],trim='-'))
+            fledger(options.externalaccount,-row['amount'],row['asset'])
+
 
 
